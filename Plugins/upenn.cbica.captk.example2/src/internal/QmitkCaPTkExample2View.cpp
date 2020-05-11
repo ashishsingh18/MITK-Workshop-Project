@@ -103,7 +103,7 @@ void QmitkCaPTkExample2View::OnCloneImageButtonClicked()
 /* protected                                                            */
 /************************************************************************/
 
-void QmitkCaPTkExample2View::OnSelectionChanged(berry::IWorkbenchPart::Pointer, const QList<mitk::DataNode::Pointer>& nodes)
+void QmitkCaPTkExample2View::OnSelectionChanged(berry::IWorkbenchPart::Pointer, const QList<mitk::DataNode::Pointer>& /*nodes*/)
 {
 	
 }
