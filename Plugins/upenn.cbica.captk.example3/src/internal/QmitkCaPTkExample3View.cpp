@@ -1,7 +1,7 @@
 #include "QmitkCaPTkExample3View.h"
 
 #include <QMessageBox>
-#include <ExampleInverter.h>
+#include <ExampleImageInverter.h>
 
 
 const std::string QmitkCaPTkExample3View::VIEW_ID =
@@ -139,27 +139,31 @@ void QmitkCaPTkExample3View::OnInvertImageButtonClicked()
 
 				// get our inverter filter class (note this isn't a proper ITK-style smart pointer --
 				// change this in your code if you are using a proper filter.
-				auto filter = captk::ExampleInverter(); 
+				auto filter = captk::ExampleImageInverter(); 
 				auto filterPtr = &filter;
 
 				filterPtr->SetInput(image);
 				filterPtr->Update();
 				mitk::Image::Pointer processedImage = filterPtr->GetOutput();
 
+				// Double check to make sure we aren't adding uninitalized or null images. 
 				if (processedImage.IsNull() || !processedImage->IsInitialized())
+					// Could do more diagnostics or raise an error message here...
 					return;
 
 				MITK_INFO << "  done";
 
-				auto processedImageDataNode = mitk::DataNode::New();
+				auto processedImageDataNode = mitk::DataNode::New(); // Create a new node
 				MITK_INFO << "Adding to a data node";
-				processedImageDataNode->SetData(processedImage);
+				processedImageDataNode->SetData(processedImage); // assign the inverted image to the node
 
 				MITK_INFO << "Adding a name";
-				QString name = QString("%1 (Inverted)").arg(imageName.c_str());
+				// Add a suffix so users can easily see what it is
+				QString name = QString("%1_inverted").arg(imageName.c_str());
 				processedImageDataNode->SetName(name.toStdString());
 
-				this->GetDataStorage()->Add(processedImageDataNode);
+				// Finally, add the new node to the data storage.
+				ds->Add(processedImageDataNode);
 			}
 		}
 	}

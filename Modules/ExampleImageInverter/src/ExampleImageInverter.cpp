@@ -1,4 +1,4 @@
-#include "ExampleInverter.h"
+#include "ExampleImageInverter.h"
 
 #include <mitkImageToItk.h>
 #include <mitkITKImageImport.h>
@@ -6,17 +6,17 @@
 
 namespace captk {
 
-ExampleInverter::ExampleInverter()
+ExampleImageInverter::ExampleImageInverter()
 {
 	// any setup required goes here
 }
 
-void ExampleInverter::SetInput(mitk::Image::Pointer inImagePtr)
+void ExampleImageInverter::SetInput(mitk::Image::Pointer inImagePtr)
 {
 	this->m_InputPtr = inImagePtr;
 }
 
-void ExampleInverter::Update()
+void ExampleImageInverter::Update()
 {
 	// Read as 3D double image (hardcoded) for now (anything else will crash).
 	// Later we can use predicates and/or AccessByItk to help with this.
@@ -39,7 +39,7 @@ void ExampleInverter::Update()
 
 }
 
-mitk::Image::Pointer ExampleInverter::GetOutput()
+mitk::Image::Pointer ExampleImageInverter::GetOutput()
 {
 	return this->m_LastOutput;
 }
