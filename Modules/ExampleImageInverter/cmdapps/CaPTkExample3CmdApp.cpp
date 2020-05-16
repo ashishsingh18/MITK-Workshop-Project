@@ -1,7 +1,7 @@
-/** \file CaPTkExampleCmdApp.cpp
- * \brief CLI program for showcasing the example
+/** \file CaPTkExample3CmdApp.cpp
+ * \brief CLI program for showcasing the example3
  * 
- * The example currently is an invert image filter
+ * The example currently showcases image inversion
  */
 
 #include <mitkCommandLineParser.h>
@@ -14,7 +14,7 @@
 #include "ExampleImageInverter.h"
 
 
-/** \brief command-line app for example module
+/** \brief command-line app for example3 module
  *
  * This command-line app takes an image and inverts it.
  */
@@ -89,14 +89,11 @@ int main(int argc, char* argv[])
     // Read input
     mitk::Image::Pointer input = mitk::IOUtil::Load<mitk::Image>(inputPath);
 
-    // Call inverter (notice the parenthesis in the extra parameters)
+    // Call example image inverter from module
 	captk::ExampleImageInverter *inverfilter = new captk::ExampleImageInverter();
 	inverfilter->SetInput(input);
 	inverfilter->Update();
 	mitk::Image::Pointer output = inverfilter->GetOutput();
-
-    //mitk::Image::Pointer output = mitk::Image::New();
-    //AccessByItk_n(input, captk::ExampleAlgorithm::Run, (maximum, output));
 
     // Save result
     mitk::IOUtil::Save(output, outputPath);
