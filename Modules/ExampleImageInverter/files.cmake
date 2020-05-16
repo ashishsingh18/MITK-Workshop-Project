@@ -11,7 +11,7 @@ set(H_FILES
 )
 
 set(MOC_H_FILES
-  include/ExampleImageInverter.h
+
 )
 
 set(RESOURCE_FILES
