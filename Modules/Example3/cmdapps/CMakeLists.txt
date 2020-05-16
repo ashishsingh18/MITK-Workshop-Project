@@ -5,6 +5,6 @@ if(BUILD_CaPTkExample3CmdApp)
     NAME CaPTkExample3CmdApp
     CPP_FILES CaPTkExample3CmdApp.cpp
     PACKAGE_DEPENDS ITK Qt5|Core
-    DEPENDS MitkExampleImageInverter
+    DEPENDS MitkExample3
   )
 endif()
