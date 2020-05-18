@@ -4,7 +4,4 @@ mitk_create_module(
   DEPENDS PUBLIC MitkCore # Module dependencies - be sure to add as needed
 )
 
-# You can add subdirectories as needed 
-add_subdirectory(cmdapps) # -> for cmd app
-
 # You can also add additional commands here as needed.
