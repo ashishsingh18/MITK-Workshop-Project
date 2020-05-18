@@ -1,4 +1,4 @@
-## ExampleInverter
+## Example3
 
 Contains the "workhorse" code for Workshop example 3. This example module will be a reusable image inverter.
 
