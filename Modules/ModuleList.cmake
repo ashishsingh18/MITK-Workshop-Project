@@ -5,4 +5,5 @@
 
 set(MITK_MODULES
 	Example3
+	Example4
 )
