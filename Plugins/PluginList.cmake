@@ -7,4 +7,5 @@ set(MITK_PLUGINS
   upenn.cbica.captk.example1:ON
   upenn.cbica.captk.example2:ON
   upenn.cbica.captk.example3:ON
+  upenn.cbica.captk.example4:ON
 )
