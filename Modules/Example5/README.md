@@ -1,3 +1,4 @@
-## Example4
+## Example5
 
-Contains the "workhorse" code for Workshop example 4. This example demonstrates cmd app that is based on module example3.
+Contains the code for Workshop example 5. 
+This example demonstrates module which internally uses a python script for computation and a cmd app that is based on this module.
