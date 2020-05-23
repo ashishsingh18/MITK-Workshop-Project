@@ -5,5 +5,9 @@
 
 set(MITK_MODULES
 	Example3
+<<<<<<< Updated upstream
 	Example4
+=======
+	ExamplePythonInvoker
+>>>>>>> Stashed changes
 )
