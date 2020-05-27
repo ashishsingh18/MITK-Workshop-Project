@@ -20,13 +20,6 @@ Python execution context can seem tricky at first, but is actually pretty simple
 how the session was begun. Imported modules/files also have their own meta-information like this. 
 Some methods of calling Python preserve/share this info, and some don't.
 
+This module uses the install-tree location of the module resources as a working directory and adds it to Python's search paths. This allows us to spoof a typical python environment a script would be run in and allows imports to work. We can use similar techniques for passing command line arguments.
 
-The following functions demonstrate different methods of running a python script file from MITK C++. 
-See the function documentation and code for details.
-
-RunSampleScriptWithSystemCall()
-
-RunSampleScriptWithExecfile()
-
-RunSampleScriptWithImport()
 
