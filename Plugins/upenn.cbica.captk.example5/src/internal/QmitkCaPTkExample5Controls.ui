@@ -59,13 +59,6 @@
     </widget>
    </item>
    <item>
-    <widget class="QPushButton" name="pushButton_InvertImagePython">
-     <property name="text">
-      <string>Invert Image (Python)</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QPushButton" name="pushButton_InvertImageModulePython">
      <property name="text">
       <string>Invert Image Module (Python)</string>

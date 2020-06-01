@@ -38,6 +38,7 @@ import os
 # writer.SetFileName ( sys.argv[2] )
 # writer.Execute ( output );
 
+print("Beginning Python Processing")
 inverter = sitk.InvertIntensityImageFilter()
 out_image = inverter.Execute(in_image)
-  
+print("Python Processing Done")
