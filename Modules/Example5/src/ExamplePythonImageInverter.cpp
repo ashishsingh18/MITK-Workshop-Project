@@ -24,25 +24,6 @@ void ExamplePythonImageInverter::SetInput(mitk::Image::Pointer inImagePtr)
 
 void ExamplePythonImageInverter::Update()
 {
-	//// Read as 3D double image (hardcoded) for now (anything else will crash).
-	//// Later we can use predicates and/or AccessByItk to help with this.
-	//using TPixel = typename short;
-	//const unsigned int VImageDimension = 3;
-	//typedef itk::Image<TPixel, VImageDimension> itkImageType;
-	//typedef itk::InvertIntensityImageFilter<itkImageType, itkImageType> FilterType;
-
-	//// There are a few ways to convert from MITK to ITK...
-	//auto itkInImage = mitk::ImageToItkImage<TPixel, VImageDimension>(this->m_InputPtr.GetPointer());
-
-	//auto filter = FilterType::New();
-	//filter->SetInput(itkInImage);
-	//filter->Update();
-	//auto itkOutImage = filter->GetOutput();
-
-	// There are also a few ways to convert from ITK to MITK.
-	//auto mitkOutImage = mitk::GrabItkImageMemory(itkOutImage); 
-	//this->m_LastOutput = mitkOutImage.GetPointer();
-
 	//load python service
 	us::ModuleContext* context = us::GetModuleContext();
 	us::ServiceReference<mitk::IPythonService> m_PythonServiceRef = context->GetServiceReference<mitk::IPythonService>();
@@ -52,6 +33,7 @@ void ExamplePythonImageInverter::Update()
 	// transfer input image to python
 	m_PythonService->CopyToPythonAsSimpleItkImage(m_InputPtr, "in_image");
 
+	//read script into QString
 	QString data;
 	QString pythonScriptName(":/QExamplePython/invertImage.py");
 	QFile file(pythonScriptName);
