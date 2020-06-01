@@ -33,7 +33,6 @@ void QmitkCaPTkExample5View::CreateQtPartControl(QWidget *parent)
   connect(m_Controls.pushButton_DoStuff, SIGNAL(clicked()), this, SLOT(OnDoStuffButtonClicked()));
   connect(m_Controls.pushButton_CloneImage, SIGNAL(clicked()), this, SLOT(OnCloneImageButtonClicked()));
   connect(m_Controls.pushButton_InvertImage, SIGNAL(clicked()), this, SLOT(OnInvertImageButtonClicked()));
-  connect(m_Controls.pushButton_InvertImagePython, SIGNAL(clicked()), this, SLOT(OnInvertImagePythonButtonClicked()));
   connect(m_Controls.pushButton_InvertImageModulePython, SIGNAL(clicked()), this, SLOT(OnInvertImageModulePythonButtonClicked()));
 
 }
@@ -172,99 +171,6 @@ void QmitkCaPTkExample5View::OnInvertImageButtonClicked()
 
 				// Finally, add the new node to the data storage.
 				ds->Add(processedImageDataNode);
-			}
-		}
-	}
-}
-
-void QmitkCaPTkExample5View::OnInvertImagePythonButtonClicked()
-{
-	//get datastorage( we use it further down )
-	auto ds = this->GetDataStorage();
-
-	//get selected nodes
-	QList<mitk::DataNode::Pointer> nodes = this->GetDataManagerSelection();
-
-	//we don't handle the case where data is not loaded or more than 1 nodes are selected
-	if (nodes.empty() || nodes.size() > 1)
-	{
-		QMessageBox msgError;
-		msgError.setText("Please load and select a dataset.");
-		msgError.setIcon(QMessageBox::Critical);
-		msgError.setWindowTitle("selection error");
-		msgError.exec();
-	}
-	else
-	{
-		//get first node from list
-		mitk::DataNode *node = nodes.front();
-
-		auto data = node->GetData();
-		// node has data?
-		if (data != nullptr)
-		{
-			// get smart pointer from data
-			mitk::Image::Pointer image = dynamic_cast<mitk::Image*>(data);
-			// ... has IMAGE data? :D
-			if (image.IsNotNull())
-			{
-				//load python service
-				us::ModuleContext* context = us::GetModuleContext();
-				us::ServiceReference<mitk::IPythonService> m_PythonServiceRef = context->GetServiceReference<mitk::IPythonService>();
-				mitk::IPythonService* m_PythonService = dynamic_cast<mitk::IPythonService*> (context->GetService<mitk::IPythonService>(m_PythonServiceRef));
-				mitk::IPythonService::ForceLoadModule();
-
-				auto imageName = node->GetName();
-				MITK_INFO << "Processing image \"" << imageName << "\" ...";
-
-				// transfer input image to python
-				m_PythonService->CopyToPythonAsSimpleItkImage(image, "in_image");
-
-				QString data;
-				QString pythonScriptName(":/QExample4/invertImage.py");
-				QFile file(pythonScriptName);
-				if (!file.open(QIODevice::ReadOnly))
-				{
-					qDebug() << "filenot opened" << endl;
-				}
-				else
-				{
-					qDebug() << "file opened" << endl;
-					data = file.readAll();
-				}
-				file.close();
-
-				//call python script
-				m_PythonService->Execute(data.toStdString(), mitk::IPythonService::MULTI_LINE_COMMAND);
-
-				// clean up after running script (better way than deleting individual variables?)
-				if (m_PythonService->DoesVariableExist("in_image"))
-					m_PythonService->Execute("del in_image");
-
-				if (m_PythonService->DoesVariableExist("out_image"))
-				{
-					//get image back from python
-					mitk::Image::Pointer processedImage = m_PythonService->CopySimpleItkImageFromPython("out_image");
-
-					// Double check to make sure we aren't adding uninitalized or null images. 
-					if (processedImage.IsNull() || !processedImage->IsInitialized())
-						// Could do more diagnostics or raise an error message here...
-						return;
-
-					MITK_INFO << "  done";
-
-					auto processedImageDataNode = mitk::DataNode::New(); // Create a new node
-					MITK_INFO << "Adding to a data node";
-					processedImageDataNode->SetData(processedImage); // assign the inverted image to the node
-
-					MITK_INFO << "Adding a name";
-					// Add a suffix so users can easily see what it is
-					QString name = QString("%1_inverted").arg(imageName.c_str());
-					processedImageDataNode->SetName(name.toStdString());
-
-					// Finally, add the new node to the data storage.
-					ds->Add(processedImageDataNode);
-				}
 			}
 		}
 	}

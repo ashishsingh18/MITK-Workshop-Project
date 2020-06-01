@@ -38,9 +38,6 @@ protected slots:
   void OnInvertImageButtonClicked();
 
   /** \brief "Invert Image using python" Button clicked slot */
-  void OnInvertImagePythonButtonClicked();
-
-  /** \brief "Invert Image using python" Button clicked slot */
   void OnInvertImageModulePythonButtonClicked();
 
 protected:
