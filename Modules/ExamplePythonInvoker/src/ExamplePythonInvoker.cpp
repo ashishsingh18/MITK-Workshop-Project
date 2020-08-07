@@ -50,6 +50,7 @@ ExamplePythonInvoker::ExamplePythonInvoker()
     mitk::IPythonService::ForceLoadModule();
     
     // Remove existing entries from path
+    // This ensures only dirs we explicitly allow will be found
     m_PythonService->Execute("import sys", mitk::IPythonService::SINGLE_LINE_COMMAND);
     m_PythonService->Execute("sys.path = []", mitk::IPythonService::SINGLE_LINE_COMMAND);
 
