@@ -73,7 +73,6 @@ ExamplePythonInvoker::ExamplePythonInvoker()
     // This is necessary for the app-specific stuff to be picked up first.
     RegisterPackageDir(captkPackageRepoDir);
 
-    // This 
     // The base python installation packages should always come LAST. 
     // In general this directory should only have builtins.
     RegisterPackageDir(captkPythonInstallSitePackagesDir);
