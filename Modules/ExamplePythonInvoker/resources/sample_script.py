@@ -44,6 +44,8 @@ if __name__ == "__main__":
 	# This pattern is useful for debugging and testing.
 	print("sample_script is running as __main__")
 	
+# TODO: create example for code only run under captk (requires magic variable management from CaPTk)
+	
 
 
 
