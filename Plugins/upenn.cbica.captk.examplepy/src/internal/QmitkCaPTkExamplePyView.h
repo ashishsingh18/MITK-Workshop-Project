@@ -41,7 +41,7 @@ protected slots:
   void OnPythonButtonClicked();
 
   /** \brief "Invert In Python" Button clicked slot */
-  void OnInvertInPythonButtonClicked();
+  void OnProcessImageInPythonButtonClicked();
 
 protected:
 

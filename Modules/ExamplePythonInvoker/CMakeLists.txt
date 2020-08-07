@@ -6,6 +6,7 @@ mitk_create_module(
 
 # You can add subdirectories as needed 
 add_subdirectory(cmdapps)
+add_subdirectory(test)
 
 
 # You can also add additional commands here as needed.

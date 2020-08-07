@@ -28,7 +28,7 @@ void QmitkCaPTkExamplePyView::CreateQtPartControl(QWidget *parent)
   connect(m_Controls.pushButton_CloneImage, SIGNAL(clicked()), this, SLOT(OnCloneImageButtonClicked()));
   connect(m_Controls.pushButton_InvertImage, SIGNAL(clicked()), this, SLOT(OnInvertImageButtonClicked()));
   connect(m_Controls.pushButton_pythonscript, SIGNAL(clicked()), this, SLOT(OnPythonButtonClicked()));
-  connect(m_Controls.pushButton_invertInPython, SIGNAL(clicked()), this, SLOT(OnInvertInPythonButtonClicked()));
+  connect(m_Controls.pushButton_processInPython, SIGNAL(clicked()), this, SLOT(OnProcessImageInPythonButtonClicked()));
 }
 
 void QmitkCaPTkExamplePyView::Activated()
@@ -113,10 +113,9 @@ void QmitkCaPTkExamplePyView::OnPythonButtonClicked()
 {
 	captk::ExamplePythonInvoker pythonInvoker;
 	pythonInvoker.RunSampleScript();
-	//pythonInvoker.RunSampleScriptUsingExecuteScript();
 }
 
-void QmitkCaPTkExamplePyView::OnInvertInPythonButtonClicked()
+void QmitkCaPTkExamplePyView::OnProcessImageInPythonButtonClicked()
 {
 
 	//get datastorage( we use it further down )
@@ -153,7 +152,7 @@ void QmitkCaPTkExamplePyView::OnInvertInPythonButtonClicked()
 
 				captk::ExamplePythonInvoker pythonInvoker;
 
-				mitk::Image::Pointer processedImage = pythonInvoker.InvertImageInPython(image);
+				mitk::Image::Pointer processedImage = pythonInvoker.ProcessImageInPython(image);
 
 				// Double check to make sure we aren't adding uninitalized or null images. 
 				if (processedImage.IsNull() || !processedImage->IsInitialized())
@@ -168,7 +167,7 @@ void QmitkCaPTkExamplePyView::OnInvertInPythonButtonClicked()
 
 				MITK_INFO << "Adding a name";
 				// Add a suffix so users can easily see what it is
-				QString name = QString("%1_inverted-in-python").arg(selectedImageName.c_str());
+				QString name = QString("%1_processed-in-python").arg(selectedImageName.c_str());
 				processedImageDataNode->SetName(name.toStdString());
 
 				// Finally, add the new node to the data storage.

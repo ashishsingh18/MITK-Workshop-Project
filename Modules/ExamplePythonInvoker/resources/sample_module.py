@@ -6,7 +6,7 @@ def my_lowercase_function(text):
 	return text.lower()
 	
 # This function is defined, but sample_script won't call it.
-# We can still call this function from c++ as needed.
+# We can still call this function from c++ if we need to.
 def some_unused_function(text):
 	return "blah"
 

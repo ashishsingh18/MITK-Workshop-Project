@@ -21,6 +21,7 @@ namespace captk {
  *  This class provides some support for script compatibility, enabling 
  *  imports of custom modules and using arbitrary resource files.
  *  Ideally this will encourage good development practices with Python.
+ *  TODO: This class needs work/cleanup.
  */
 class MITKEXAMPLEPYTHONINVOKER_EXPORT ExamplePythonInvoker
 {
@@ -32,7 +33,7 @@ public:
     // Work functions.
     // Most scripts will probably only need one work function.
     // Anything interactive in nature will need more work connecting between plugin and module.
-    mitk::Image::Pointer InvertImageInPython(mitk::Image::Pointer inputImage);
+    mitk::Image::Pointer ProcessImageInPython(mitk::Image::Pointer inputImage);
     void RunSampleScript();
 
     // Utility functions for working with python
@@ -48,14 +49,14 @@ protected:
     mitk::IPythonService* m_PythonService;
 
     // path to our located python files
-    // All instances of this class use the same python files.
-    static std::string pythonFilesDirPath;
-    static bool pythonFilesDirFound; 
+    std::string pythonFilesDirPath;
+    bool pythonFilesDirFound; 
 
 
     void RegisterResourceDir(std::string resourceDirPath);
+    void RegisterPackageDir(std::string packageDirPath);
 
-    static std::string LocatePythonFileDir();
+    std::string LocatePythonFileDir();
 
 
 };

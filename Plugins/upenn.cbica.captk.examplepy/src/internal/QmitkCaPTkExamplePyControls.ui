@@ -54,21 +54,21 @@
    <item>
     <widget class="QPushButton" name="pushButton_InvertImage">
      <property name="text">
-      <string>Invert Image</string>
+      <string>Invert Image (Pure MITK Implementation)</string>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QPushButton" name="pushButton_pythonscript">
      <property name="text">
-      <string>Run Python Sample Script</string>
+      <string>Run Python Sample Script (sample_script.py)</string>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QPushButton" name="pushButton_invertInPython">
+    <widget class="QPushButton" name="pushButton_processInPython">
      <property name="text">
-      <string>Invert In Python</string>
+      <string>Process in Python (ProcessImage.py)</string>
      </property>
     </widget>
    </item>

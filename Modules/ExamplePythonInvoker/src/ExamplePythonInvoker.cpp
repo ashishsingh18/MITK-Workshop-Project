@@ -12,13 +12,34 @@
 
 namespace captk {
 
-// Default static variables
-bool ExamplePythonInvoker::pythonFilesDirFound = false;
-std::string ExamplePythonInvoker::pythonFilesDirPath = "";
-
 // Functions to ensure all python files are available
 ExamplePythonInvoker::ExamplePythonInvoker()
 {
+    std::string currentExecutableDir = QCoreApplication::applicationDirPath().toStdString();
+
+    pythonFilesDirFound = false;
+    // TODO: Set this dynamically, pick up other meta-info from app-specific directory
+    pythonFilesDirPath = currentExecutableDir + "/MitkExamplePythonInvoker/resources/";
+
+    // TODO: Figure out what we do for builds that aren't installed...
+    // Maybe just install miniconda/python in the ${BINARY_DIR}/Python/. 
+    // The above shouldn't be done on build agents though. Just developer machines.
+
+    // TODO: Could put these from a header or a singleton class or something...
+    // But for now this is fine. Note these are installation and OS dependent.
+    std::string captkPythonInstallDir = ""; // Where the Python install is in the CaPTk2 tree
+    std::string captkPackageRepoDir = ""; // Where we install versioned packages using pip
+    std::string captkPythonInstallSitePackagesDir = ""; // site-packages of the Python install
+    
+#ifdef _WIN32  
+    captkPythonInstallDir = currentExecutableDir + "/Python/";
+    captkPackageRepoDir = captkPythonInstallDir + "/installedPackages/";
+    captkPythonInstallSitePackagesDir = currentExecutableDir + "/Python/Lib/site-packages/";
+#elif __linux__
+    // TODO: Get these paths
+#elif __APPLE__
+    // TODO: Get these paths
+#endif
 	// Set up python service
     // We need to get access to the Python service through the microservices interface.
     // This is basically boilerplate. (TBD: figure out what preserves or refreshes the python context)
@@ -29,17 +50,28 @@ ExamplePythonInvoker::ExamplePythonInvoker()
     mitk::IPythonService::ForceLoadModule();
     
     // Find our python files if we haven't already and allow python to access them
-    if (pythonFilesDirFound)
+    if (!pythonFilesDirFound)
     {
-        RegisterResourceDir(pythonFilesDirPath);
+        LocatePythonFileDir();
     }
-    else 
-    {
-        RegisterResourceDir(LocatePythonFileDir());
-    }
-
+    
+    // Add to path first just in case.
+    RegisterResourceDir(pythonFilesDirPath);
     // Set cwd in python as if it was run natively.
     ChangeWorkingDirectory(pythonFilesDirPath);
+
+    // TODO: Pick up listed (versioned) dependencies at run-time.
+    // CONT: Add dirs corresponding to those dependency name-version strings to the search path dynamically.
+
+    // Append additional dirs -- the more general, the later they should come!
+    // App-specific dirs should appear as early in the path as possible.
+    // This is necessary for the app-specific stuff to be picked up first.
+    RegisterPackageDir(captkPackageRepoDir);
+
+    // This 
+    // The base python installation packages should always come LAST. 
+    // In general this directory should only have builtins.
+    RegisterPackageDir(captkPythonInstallSitePackagesDir);
 }
 
 void ExamplePythonInvoker::RegisterResourceDir(std::string resourceDirPath)
@@ -48,6 +80,18 @@ void ExamplePythonInvoker::RegisterResourceDir(std::string resourceDirPath)
     std::vector< std::string > absolute_search_dirs = { resourceDirPath };
 
     // Python will now also look in these dirs for modules/packages.
+    // This path will be *APPENDED* to the search path.
+    // this function only takes a vector of std::strings.
+    m_PythonService->AddAbsoluteSearchDirs(absolute_search_dirs);
+}
+
+void ExamplePythonInvoker::RegisterPackageDir(std::string packageDirPath)
+{
+    // construct a vector to feed to Python's absolute search dirs
+    std::vector< std::string > absolute_search_dirs = { packageDirPath };
+
+    // Python will now also look in these dirs for modules/packages.
+    // This path will be *APPENDED* to the search path.
     // this function only takes a vector of std::strings.
     m_PythonService->AddAbsoluteSearchDirs(absolute_search_dirs);
 }
@@ -95,7 +139,7 @@ void ExamplePythonInvoker::PassArgsToPython(std::vector<std::string> args)
      * for use with scripts that are usually run like that.
      * This means we can flexibly wrap any script with C++ parsing,
      * or just use the python script's parsing.
-     * All we need to do is construct the args vector.
+     * All we need to do ahead of time is construct the args vector.
      */
     
     // import sys to make sure we can access this. 
@@ -115,7 +159,7 @@ void ExamplePythonInvoker::PassArgsToPython(std::vector<std::string> args)
 }
 
 bool ExamplePythonInvoker::ChangeWorkingDirectory(
-    std::string newWorkingDirectoryPath = ExamplePythonInvoker::pythonFilesDirPath)
+    std::string newWorkingDirectoryPath)
 {
     // This function allows us to set the working directory in Python to whatever we want.
    
@@ -154,28 +198,28 @@ bool ExamplePythonInvoker::IsOkayToRun()
 
 // Work functions
 
-mitk::Image::Pointer ExamplePythonInvoker::InvertImageInPython(mitk::Image::Pointer inputImage)
+mitk::Image::Pointer ExamplePythonInvoker::ProcessImageInPython(mitk::Image::Pointer inputImage)
 {
     // This will showcase how to retrieve mitk image outputs from python scripts effectively.
     /* Note that this approach assumes certain things about the python code -- 
      * We could effectively make this an "interface" of variable names
      * that we ask algorithm writers to use.
-     * This would be part of our sit-down talks with algorithm developers.
+     * This would probably be part of our sit-down talks with algorithm developers.
      */
 
-    auto entryPointFilename = "invertImage.py";
-    m_PythonService->CopyToPythonAsSimpleItkImage(inputImage, "in_image");
+    auto entryPointFilename = "ProcessImage.py";
+    m_PythonService->CopyToPythonAsSimpleItkImage(inputImage, "CAPTK_IN_IMAGE");
 
     m_PythonService->ExecuteScript(pythonFilesDirPath + "/" + entryPointFilename);
 
-    // clean up in_image
-    if (m_PythonService->DoesVariableExist("in_image"))
-        m_PythonService->Execute("del in_image");
+    // clean up CAPTK_IN_IMAGE after script has run
+    if (m_PythonService->DoesVariableExist("CAPTK_IN_IMAGE"))
+        m_PythonService->Execute("del CAPTK_IN_IMAGE");
 
     // grab and return image
-    if (m_PythonService->DoesVariableExist("out_image"))
+    if (m_PythonService->DoesVariableExist("CAPTK_OUT_IMAGE"))
     {
-        mitk::Image::Pointer processedImage = m_PythonService->CopySimpleItkImageFromPython("out_image");
+        mitk::Image::Pointer processedImage = m_PythonService->CopySimpleItkImageFromPython("CAPTK_OUT_IMAGE");
         return processedImage;
     }
     
@@ -193,10 +237,11 @@ void ExamplePythonInvoker::RunSampleScript()
     // Now you can do post-processing. Retrieve results, call more python functions, etc...
 
     // Example: Get a variable from Python
-    std::string resultFromPython = m_PythonService->GetVariable("result");
+    std::string resultFromPython = m_PythonService->GetVariable("CAPTK_RESULT_STRING");
     MITK_INFO << "Result from Python: " + resultFromPython;
 
     // Example: Set a variable in Python generated in C++. 
+    // TODO: Replace this with a convenience function...
     int someCppGeneratedValue = 42;
     QString passVarToPythonCommand = QString("var_from_cpp = ") 
         + QString::number(someCppGeneratedValue);
@@ -206,7 +251,7 @@ void ExamplePythonInvoker::RunSampleScript()
         mitk::IPythonService::SINGLE_LINE_COMMAND);
     // Maybe we could modify this to return a status string
     
-    // See InvertImageInPython for an example of how to pass images back and forth.
+    // See ProcessImageInPython for an example of how to pass images back and forth.
 }
 
 } // end namespace captk
