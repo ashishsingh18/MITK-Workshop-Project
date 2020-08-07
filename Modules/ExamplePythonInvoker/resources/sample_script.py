@@ -36,8 +36,13 @@ print(my_string + " -> " + result)
 
 CAPTK_RESULT_STRING = result
 
-import numpy as np # this module is installed via pip and can fail to import if the package is missing
+import numpy as np 
 print("numpy imported successfully.")
+print("numpy was imported from: " + np.__file__) 
+
+import sklearn 
+print("sklearn imported successfully.")
+print("sklearn was imported from: " + sklearn.__file__) 
 
 if __name__ == "__main__":
 	# This block will execute if this file was run directly -- not through import, etc.

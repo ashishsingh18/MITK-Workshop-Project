@@ -49,6 +49,10 @@ ExamplePythonInvoker::ExamplePythonInvoker()
     m_PythonService = dynamic_cast<mitk::IPythonService*> (context->GetService<mitk::IPythonService>(m_PythonServiceRef));
     mitk::IPythonService::ForceLoadModule();
     
+    // Remove existing entries from path
+    m_PythonService->Execute("import sys", mitk::IPythonService::SINGLE_LINE_COMMAND);
+    m_PythonService->Execute("sys.path = []", mitk::IPythonService::SINGLE_LINE_COMMAND);
+
     // Find our python files if we haven't already and allow python to access them
     if (!pythonFilesDirFound)
     {
