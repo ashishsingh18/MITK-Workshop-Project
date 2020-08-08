@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/QExamplePython">
+        <file>invertImage.py</file>
+    </qresource>
+</RCC>
