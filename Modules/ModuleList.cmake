@@ -6,5 +6,6 @@
 set(MITK_MODULES
 	Example3
 	Example4
+	ExamplePythonInvoker
 	Example5
 )
