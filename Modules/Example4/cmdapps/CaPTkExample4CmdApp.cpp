@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
   parser.addArgument(
     "input",
     "i",
-    mitkCommandLineParser::InputFile,
+    mitkCommandLineParser::File,
     "Input image path",
     "Path to the input image to be inverted",
     us::Any(),
@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
   parser.addArgument(
     "output",
     "o",
-    mitkCommandLineParser::OutputFile,
+    mitkCommandLineParser::File,
     "Output",
     "Output image target path",
     us::Any(),
